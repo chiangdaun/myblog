@@ -1,0 +1,9 @@
+.button-right {
+    position: absolute;
+    right: 40px;
+    top: 15px;
+}
+
+.pagination{
+    float: right;
+}

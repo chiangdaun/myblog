@@ -1,0 +1,71 @@
+{% extends 'home/base_right.html' %}
+
+{% block banner_left %}
+    <div class="picsbox1">
+        <div class="banner">
+            <div id="banner" class="fader">
+                <li class="slide">
+                    <a href="#" target="_blank">
+                        <img src="{{ url_for('static',filename='home/images/banner01.jpg') }}" alt="">
+                        <span class="imginfo"> 简单一点 再简单一点 这就是生活 </span>
+                    </a>
+                </li>
+                <li class="slide">
+                    <a href="/" target="_blank">
+                        <img src="{{ url_for('static',filename='home/images/banner04.jpg') }}" alt="">
+                        <span class="imginfo"> 不思 故有惑 不求 故无得 不问 故不知</span>
+                    </a>
+                </li>
+                <li class="slide">
+                    <a href="/" target="_blank">
+                        <img src="{{ url_for('static',filename='home/images/banner03.jpg') }}" alt="">
+                        <span class="imginfo"> 每一段路都是一种领悟 </span></a>
+                </li>
+                <div class="fader_controls">
+                    <div class="page prev" data-target="prev">&lsaquo;</div>
+                    <div class="page next" data-target="next">&rsaquo;</div>
+                    <ul class="pager_list">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block posts_list %}
+    <!--博客列表-->
+    <div class="blogsbox">
+        {% for post in post_list %}
+            <div class="blogs" data-scroll-reveal="enter bottom over 1s">
+                <div class="article_header">
+                    <h3 class="blogtitle" style="display: inline-block"><a
+                            href="{{ url_for('home.show_post',post_id=post.id) }}">{{ post.title }}</a>
+                    </h3>
+                </div>
+                <span class="blogpic">
+                    <a href="{{ url_for('home.show_post',post_id=post.id) }}" title="">
+                        {% if post.id % 2 == 0 %}
+                            <img src="{{ url_for('static',filename='home/images/toppic01.jpg') }}" alt="">
+                        {% else %}
+                            <img src="{{ url_for('static',filename='home/images/toppic02.jpg') }}" alt="">
+                        {% endif %}
+                    </a>
+                </span>
+                <p class="blogtext">{{ post.body|striptags|truncate(40) }}</p>
+                <div class="bloginfo">
+                    <ul>
+                        <li class="author">
+                            <a href="{{ url_for('home.about_me') }}">段少强</a>
+                        </li>
+                        <li class="lmname">
+                            <a href="{{ url_for('home.show_cate',keyword=post.category_id,page=1) }}">{{ post.category.name }}</a>
+                        </li>
+                        <li class="timer">{{ post.timestamp }}</li>
+                        <li class="view"><span>{{ post.read_num }}</span>已阅读</li>
+                        <li class="like">{{ post.like_num }}</li>
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

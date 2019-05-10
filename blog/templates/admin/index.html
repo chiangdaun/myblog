@@ -1,0 +1,118 @@
+{% extends "admin/admin.html" %}
+
+{% block content %}
+    <section class="content-header">
+        <h1>博客管理系统</h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>
+            <li class="active">控制面板</li>
+        </ol>
+    </section>
+    <section class="content" id="showcontent">
+        <div class="row">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">内存使用率</h3>
+                        </div>
+                        <div class="box-body" id="meminfo" style="height:600px;">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">系统参数</h3>
+                        </div>
+                        <table class="table table-hover">
+                            <tr>
+                                <td>内存总量:</td>
+                                <td id="total_mem"></td>
+                            </tr>
+                            <tr>
+                                <td>已使用内存:</td>
+                                <td id="used_mem"></td>
+                            </tr>
+                            <tr>
+                                <td>可使用内存:</td>
+                                <td id="available_mem"></td>
+                            </tr>
+                            <tr>
+                                <td>操作系统版本:</td>
+                                <td>Linux V4.4.0-128-generic amd64</td>
+                            </tr>
+                            <tr>
+                                <td>Python版本:</td>
+                                <td>python3.6</td>
+                            </tr>
+                            <tr>
+                                <td>服务器IP:</td>
+                                <td id="ip">118.24.124.145</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block js %}
+    <script src="{{ url_for('static', filename='js/echarts.min.js') }}"></script>
+    <script>
+        var mem_state = "{{ url_for('admin.memory_state') }}";
+        $(document).ready(function () {
+            $.ajax({
+                url: mem_state,
+                type: 'GET',
+                success: function (data) {
+                    var total_mem = data[0].total_mem;
+                    var used_mem = data[0].used_mem;
+                    var available_mem = data[0].available_mem;
+                    document.getElementById("total_mem").innerText = total_mem + 'MB';
+                    document.getElementById("used_mem").innerText = used_mem + 'MB';
+                    document.getElementById("available_mem").innerText = available_mem + 'MB';
+                    var percent_t = (used_mem / total_mem) * 100;
+                    var percent = percent_t.toFixed(2);
+                    var myChart = echarts.init(document.getElementById('meminfo'));
+                    option = {
+                        backgroundColor: "white",
+                        tooltip: {
+                            formatter: "{a} <br/>{b} : {c}%"
+                        },
+                        toolbox: {
+                            show: true,
+                            feature: {
+                                mark: {show: true},
+                                restore: {show: true},
+                                saveAsImage: {show: true}
+                            }
+                        },
+                        series: [{
+                            name: '内存使用率',
+                            type: 'gauge',
+                            detail: {
+                                formatter: '{value}%'
+                            },
+                            data: [{
+                                value: 50,
+                                name: '内存使用率'
+                            }]
+                        }]
+                    };
+                    setInterval(function () {
+                        option.series[0].data[0].value = percent;
+                        myChart.setOption(option, true);
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#g-1").addClass("active");
+        });
+    </script>
+{% endblock %}

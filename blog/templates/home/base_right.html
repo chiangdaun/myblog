@@ -1,0 +1,144 @@
+{% extends 'home/base.html' %}
+
+{% block banner_right %}
+    <div class="picsbox2">
+        <div class="toppic" id="toppic">
+            <li>
+                <a href="/">
+                    <i>
+                        <img src="{{ url_for('static',filename='home/images/toppic01.jpg') }}" alt="">
+                    </i>
+                    <h2>于无常处知有请 / 于有情处知终生</h2>
+                    <span>学无止境</span>
+                </a>
+            </li>
+            <li>
+                <a href="/">
+                    <i><img src="{{ url_for('static',filename='home/images/zd01.jpg') }}" alt=""></i>
+                    <h2>个人博客，属于我的小世界！</h2>
+                    <span>学无止境</span>
+                </a>
+            </li>
+        </div>
+    </div>
+{% endblock %}
+
+{% block posts_list %}
+
+{% endblock %}
+{% block sidebar %}
+    <!--特别推荐-->
+    <div class="zhuanti">
+        <h2 class="hometitle">特别推荐</h2>
+        <ul>
+            <li><i><img src="{{ url_for('static',filename='home/images/b06.jpg') }}" alt=""></i>
+                <p>flask快速学习 <span><a href="/">阅读</a></span></p>
+            </li>
+            <li><i><img src="{{ url_for('static',filename='home/images/b04.jpg') }}" alt=""></i>
+                <p>5.20 我想对你说 <span><a href="/">阅读</a></span></p>
+            </li>
+            <li><i><img src="{{ url_for('static',filename='home/images/b05.jpg') }}" alt=""></i>
+                <p>个人博客，属于我的小世界！ <span><a href="/">阅读</a></span></p>
+            </li>
+        </ul>
+    </div>
+    <!--点击排行-->
+    <div class="tuijian">
+        <h2 class="hometitle">点击排行</h2>
+        <ul class="tjpic" id="tjpic">
+            <i>
+                <img src="{{ url_for('static',filename='home/images/toppic01.jpg') }}" alt="">
+            </i>
+            <p>
+                <a href="/">别让这些闹心的套路，毁了你的网页设计</a>
+            </p>
+        </ul>
+        <ul class="sidenews" id="sidenews">
+
+        </ul>
+    </div>
+    <!--友情链接-->
+    <div class="links">
+        <h2 class="hometitle">友情链接</h2>
+        <ul id="friendly_links">
+            <li>
+                <a href="http://www.yangqq.com" target="_blank">杨青博客</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        var sidebar_1 = {{ url_for('home.sidebar_1') }};
+        var sidebar_4 = {{ url_for('home.sidebar_4') }};
+        var link = {{ url_for('home.friendly_link') }};
+        <!--右上两个图片的替换,暂未实现-->
+        var right_top = {{ url_for('home.right_top') }};
+        $(document).ready(function () {
+            <!--点击排行第一个-->
+            $.ajax({
+                url: sidebar_1,
+                type: 'GET',
+                success: function (data) {
+                    {#console.log(data);#}
+                    var str = '';
+                    $.each(data, function (i, item) {
+                        str += '<i><img src="/static/home/images/toppic01.jpg"></i>';
+                        str += '<p><a href="/post/' + item.id + '">' + item.title + '</a></p>';
+                    });
+                    $(".tjpic").html(str);
+                },
+                error: function () {
+                }
+            });
+
+            <!--点击排行后四个-->
+            $.ajax({
+                url: sidebar_4,
+                type: 'GET',
+                success: function (data) {
+                    {#console.log(data);#}
+                    var str = '';
+                    $.each(data, function (i, item) {
+                        data_time = new Date(item.timestamp);
+                        Y = data_time.getFullYear() + '-';
+                        M = (data_time.getMonth() + 1 < 10 ? '0' + (data_time.getMonth() + 1) : data_time.getMonth() + 1) + '-';
+                        D = (data_time.getDate() < 10 ? '0' + (data_time.getDate()) : data_time.getDate()) + ' ';
+                        h = (data_time.getHours() < 10 ? '0' + (data_time.getHours()) : data_time.getHours()) + ':';
+                        m = (data_time.getMinutes() < 10 ? '0' + (data_time.getMinutes()) : data_time.getMinutes()) + ':';
+                        s = (data_time.getSeconds() < 10 ? '0' + (data_time.getSeconds()) : data_time.getSeconds());
+                        date_value = Y + M + D + h + m + s;
+                        {#console.log(date_value);#}
+                        str += '<li><i><img src="/static/home/images/v' + i + '.jpg"></i>';
+                        str += '<p><a href="/post/' + item.id + '">' + item.title + '</a></p>';
+                        str += '<span>' + date_value + '</span>';
+                        str += '</li>';
+                    });
+                    $(".sidenews").html(str);
+                },
+                error: function () {
+                }
+            });
+
+            <!--友情链接-->
+            $.ajax({
+                url: link,
+                type: 'GET',
+                data: {"i1": 'xyz', "i2": '123'},
+                success: function (data) {
+                    {#console.log(data);#}
+                    var str = '';
+                    $.each(data, function (i, item) {
+                        str += '<li><a href="' + item.url + '" target="_blank">' + item.name + '</a>';
+                        str += '</li>';
+                        {#console.log(str);#}
+                    });
+                    $("#friendly_links").html(str);
+                },
+                error: function () {
+                }
+            });
+        })
+    </script>
+{% endblock %}

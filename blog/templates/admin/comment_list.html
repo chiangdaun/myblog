@@ -1,0 +1,84 @@
+{% extends "admin/admin.html" %}
+{% import "ui/admin_page.html" as pg %}
+
+{% block content %}
+    <section class="content-header">
+        <h1>博客管理系统</h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> 评论管理</a></li>
+            <li class="active">评论列表</li>
+        </ol>
+    </section>
+    <section class="content" id="showcontent">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">评论列表</h3>
+                    </div>
+                    <div class="box-body table-responsive no-padding">
+                        {% for msg in get_flashed_messages(category_filter=["ok"]) %}
+                            <div class="alert alert-success alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                <h4><i class="icon fa fa-check"></i> 操作成功 </h4>
+                                {{ msg }}
+                            </div>
+                        {% endfor %}
+                        <table class="table table-hover">
+                            <tbody>
+                            <tr>
+                                <th>序</th>
+                                <th>评论人</th>
+                                <th>评论博客</th>
+                                <th>评论内容</th>
+                                <th>评论人邮箱</th>
+                                <th>回复的谁</th>
+                                <th>审查</th>
+                                <th>评论时间</th>
+                                <th>操作事项</th>
+                            </tr>
+                            {% for comment in page_data.items %}
+                                <tr>
+                                    <td>{{ loop.index + (page-1)*len }}</td>
+                                    <td>{{ comment.author }}</td>
+                                    <td>{{ comment.post.title }}</td>
+                                    <td>{{ comment.body }}</td>
+                                    <td>{{ comment.email }}</td>
+                                    {% if comment.replied_id != None %}
+                                        <td>{{ comment.replied.author }}:{{ comment.replied.body }}</td>
+                                    {% else %}
+                                        <td>无</td>
+                                    {% endif %}
+                                    {% if  comment.reviewed==1 %}
+                                        <td>是</td>
+                                    {% else %}
+                                        <td>否</td>
+                                    {% endif %}
+                                    <td>{{ comment.timestamp }}</td>
+                                    <td>
+                                        <a href="#"
+                                           class="label label-success">编辑</a>
+                                        &nbsp;
+                                        <a href="#" class="label label-danger">删除</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="box-footer clearfix">
+                        {{ pg.page(page_data, "admin.comment_list") }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            $("#g-4").addClass("active");
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'admin/admin.html' %}
+{% block content %}
+    <section class="content-header">
+        <h1>分类管理/新增</h1>
+    </section>
+    <section class="content">
+        <div class="row">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% for msg in get_flashed_messages(category_filter=["ok"]) %}
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+                        </button>
+                        <h4><i class="icon fa fa-check"></i> 操作成功 </h4>
+                        {{ msg }}
+                    </div>
+                {% endfor %}
+                {% for msg in get_flashed_messages(category_filter=["err"]) %}
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+                        </button>
+                        <h4><i class="icon fa fa-ban"></i> 操作失败 </h4>
+                        {{ msg }}
+                    </div>
+                {% endfor %}
+                <div class="col-md-12">
+                    <div class="box box-primary">
+                        <div class="box box-body">
+                            <div class="form-group">
+                                {{ form.name.label }}<span class="small text-danger">*</span>
+                                {{ form.name }}
+                            </div>
+                        </div>
+                        <div class="box box-footer">
+                            {{ form.csrf_token }}
+                            {{ form.submit }}
+                            <button type="reset" class="btn btn-default"> 重置</button>
+                            <a href="javascript:history.go(-1)" class="btn btn-success"> 返回</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+{% endblock %}

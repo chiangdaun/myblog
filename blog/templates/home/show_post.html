@@ -1,0 +1,153 @@
+{% extends 'home/base_right.html' %}
+{% block banner_left %}{% endblock %}
+{% block banner_right %}{% endblock %}
+{% block daohang %}
+
+{% endblock %}
+{% block posts_list %}
+    <h1 class="t_nav">
+        <span>您现在的位置是：
+            <a href="/">首页</a>
+            >
+            {% if post.category.name == '经典语录' or post.category.name == '日记' or post.category.name == '欣赏' %}
+                <a href="{{ url_for('home.show_first_cate',keyword='life',page=1) }}">慢生活</a>
+            {% else %}
+                <a href="{{ url_for('home.show_first_cate',keyword='work',page=1) }}">学无止境</a>
+            {% endif %}
+            >
+            <a href="{{ url_for('home.show_cate',keyword=post.category_id,page=1) }}">{{ post.category.name }}</a>
+        </span>
+        <a href="/" class="n1">网站首页</a>
+        {% if post.category.name == '经典语录' or post.category.name == '日记' or post.category.name == '欣赏' %}
+            <a href="{{ url_for('home.show_first_cate',keyword='life',page=1) }}" class="n2">慢生活</a>
+        {% else %}
+            <a href="{{ url_for('home.show_first_cate',keyword='work',page=1) }}" class="n2">学无止境</a>
+        {% endif %}
+        <a href="{{ url_for('home.show_cate',keyword=post.category_id,page=1) }}"
+           class="n3">{{ post.category.name }}</a>
+    </h1>
+    <div class="infosbox">
+        <div class="newsview">
+            <h3 class="news_title">{{ post.title }}</h3>
+            <div class="bloginfo">
+                <ul>
+                    <li class="author"><a href="{{ url_for('home.about_me') }}">段少强</a></li>
+                    <li class="lmname"><a
+                            href="{{ url_for('home.show_cate',keyword=post.category_id,page=1) }}">{{ post.category.name }}</a>
+                    </li>
+                    <li class="timer">{{ post.timestamp }}</li>
+                    {% if  post.read_num %}
+                        <li class="view">{{ post.read_num }}已阅读</li>
+                    {% else %}
+                        <li class="view">0已阅读</li>
+                    {% endif %}
+                    <li class="like">{{ post.like_num }}</li>
+                </ul>
+            </div>
+            <div class="tags"><a href="/" target="_blank">个人博客</a> &nbsp; <a href="/" target="_blank">小世界</a></div>
+            <div class="news_about"><strong>简介</strong>{{ post.body|striptags|truncate(100) }}</div>
+            <div class="news_con">
+                {{ post.body|safe }}
+                <br>
+                <br>
+                <div>
+                    <img alt="" src="{{ url_for('static',filename='home/images/banner02.jpg') }}"
+                         style="margin: 0 auto"><br>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="article-social">
+            <div class="diggword" id="digg_tips" style="color: red;margin: 0 auto;"></div>
+            <a href="javascript:" data-action="ding" data-id="6519" id="Addlike" class="action actived"
+               data-original-title="" title=""><i class="fa fa-heart-o"></i>喜欢 (<span
+                    class="count" id="like_num">{{ post.like_num }}</span>)</a>
+            <span class="or">or</span>
+            <span class="action action-share bdsharebuttonbox"><i class="fa fa-share-alt"></i>分享
+                (<span class="bds_count" data-cmd="count" title="累计分享0次">0</span>)
+                <div class="action-popover">
+                    <div class="popover top in">
+                        <div class="arrow"></div>
+                        <div class="popover-content">
+                            <a href="#" class="sinaweibo fa fa-weibo" data-cmd="tsina" title=""
+                               data-original-title="分享到新浪微博"></a>
+                            <a href="#" class="bds_qzone fa fa-star" data-cmd="qzone" title=""
+                               data-original-title="分享到QQ空间"></a>
+                            <a href="#" class="tencentweibo fa fa-tencent-weibo" data-cmd="tqq" title=""
+                               data-original-title="分享到腾讯微博"></a>
+                            <a href="#" class="qq fa fa-qq" data-cmd="sqq" title="" data-original-title="分享到QQ好友"></a>
+                            <a href="#" class="bds_renren fa fa-renren" data-cmd="renren" title=""
+                               data-original-title="分享到人人网"></a>
+                            <a href="#" class="bds_weixin fa fa-weixin" data-cmd="weixin" title=""
+                               data-original-title="分享到微信"></a>
+                            <a href="#" class="bds_more fa fa-ellipsis-h" data-cmd="more" data-original-title=""
+                               title=""></a>
+                        </div>
+                    </div>
+                </div>
+            </span>
+        </div>
+        <div class="nextinfo">
+            {% if prev_post %}
+                <p>上一篇：<a href="{{ url_for('home.show_post',post_id=prev_post.id) }}">{{ prev_post.title }}</a></p>
+            {% else %}
+                <p>上一篇：没有了</p>
+            {% endif %}
+            {% if next_post %}
+                <p>下一篇：<a href="{{ url_for('home.show_post',post_id=next_post.id) }}">{{ next_post.title }}</a></p>
+            {% else %}
+                <p>下一篇：没有了</p>
+            {% endif %}
+
+        </div>
+        <div class="otherlink">
+            <h2>相关文章</h2>
+            <ul>
+
+            </ul>
+        </div>
+        <div class="news_pl">
+            <h2>文章评论</h2>
+            <ul>
+                <div class="gbko"></div>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    {{ super() }}
+    <script src="{{ url_for('static',filename='home/js/setupajax.js') }}"></script>
+    <script>
+        var post_id = "{{ post.id }}";
+        var addlike = {{ url_for('home.addlike') }};
+        var flag = 0;
+        $(".article-social #Addlike").click(function () {
+            {#alert(123);#}
+            console.log(post_id);
+            $.ajax({
+                url: addlike,
+                type: 'GET',
+                data: {
+                    post_id: post_id,
+                },
+                success: function (data) {
+                    console.log(data);
+                    console.log(data.state);
+                    if (data.state && flag == 0) {
+                        var val = $("#like_num").text();
+                        val = parseInt(val) + 1;
+                        $("#like_num").text(val);
+                    } else {
+                        $("#digg_tips").html("點讚過嘍！");
+                    }
+                    setTimeout(function () {
+                        $("#digg_tips").html("")
+                    }, 5000);
+                    flag++;
+                }
+            });
+
+        })
+    </script>
+{% endblock %}

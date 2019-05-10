@@ -1,0 +1,115 @@
+{% extends "admin/admin.html" %}
+{% import "ui/admin_page.html" as pg %}
+
+{% block content %}
+    <section class="content-header">
+        <h1>分类管理</h1>
+        <div class="btn-group button-right" role="group" aria-label="...">
+            <a href="{{ url_for('admin.new_category') }}" id="btn-add" class="btn btn-primary"><span
+                    class="glyphicon glyphicon-plus-sign"></span> 新增
+            </a>
+        </div>
+    </section>
+    <section class="content" id="showcontent">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">分类列表</h3>
+                    </div>
+                    <div class="box-body table-responsive no-padding">
+                        {% for msg in get_flashed_messages(category_filter=["ok"]) %}
+                            <div class="alert alert-success alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+                                </button>
+                                <h4><i class="icon fa fa-check"></i> 操作成功 </h4>
+                                {{ msg }}
+                            </div>
+                        {% endfor %}
+                        {% for msg in get_flashed_messages(category_filter=["err"]) %}
+                            <div class="alert alert-danger alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+                                </button>
+                                <h4><i class="icon fa fa-ban"></i> 操作失败 </h4>
+                                {{ msg }}
+                            </div>
+                        {% endfor %}
+                        <table class="table table-hover">
+                            <tbody>
+                            <tr>
+                                <th>序</th>
+                                <th>名称</th>
+                                <th>类型</th>
+                                <th>操作事项</th>
+                            </tr>
+                            {% for category in page_data.items %}
+                                <tr>
+                                    <td>{{ loop.index + (page-1)*len }}</td>
+                                    <td>
+                                        <a href="{{ url_for('admin.edit_category',category_id=category.id) }}">
+                                            {{ category.name }}
+                                        </a>
+                                    </td>
+                                    {% if category.type  == 'work' %}
+                                        <td>学无止境</td>
+                                    {% else %}
+                                        <td>慢生活</td>
+                                    {% endif %}
+                                    <td>
+                                        <a href="{{ url_for('admin.edit_category',category_id=category.id) }}"
+                                           class="label label-success">编辑
+                                        </a>
+                                        &nbsp;
+                                        <a class="label label-danger first_delete" data-toggle="modal"
+                                           data-target="#mymodal" id="{{ category.id }}">删除</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <div id="mymodal" class="modal fade">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <div class="close" data-dismiss="modal">&times;</div>
+                                            <h5>确认删除</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>若删除该分类，该分类下的博文将移至默认分类。是否删除？</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-primary second_delete">删除</button>
+                                            <button class="btn btn-default" data-dismiss="modal">取消</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="box-footer clearfix">
+                        {{ pg.page(page_data, "admin.category_list") }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            $("#g-3").addClass("active");
+        });
+        var delete_id;
+        $('.first_delete').click(function () {
+            var $tds = $(this).parent().parent().children();// 获取到所有列
+            var delete_td = $($tds[3]).children();//取到'查看/删除'所在列
+            delete_id = delete_td[1].getAttribute("id");//取到要删除的对象的id
+        });
+
+        $('.second_delete').click(function () {
+            location.href = "/admin/category/delete/" + delete_id;
+            //把modal隐藏
+            $('#mymodal').modal('hide');
+        });
+    </script>
+{% endblock %}

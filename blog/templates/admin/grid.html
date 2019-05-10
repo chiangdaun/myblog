@@ -1,0 +1,50 @@
+<ul class="sidebar-menu">
+    <li class="treeview" id="g-1">
+        <a href="{{ url_for('admin.index') }}">
+            <i class="fa fa-home" aria-hidden="true"></i>
+            <span>首页</span>
+        </a>
+    </li>
+    <li class="treeview" id="g-2">
+        <a href="{{ url_for('admin.post_list',page=1) }}">
+            <i class="fa fa-file" aria-hidden="true"></i>
+            <span>博客管理</span>
+        </a>
+    </li>
+    <li class="treeview" id="g-3">
+        <a href="{{ url_for('admin.category_list',page=1) }}">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+            <span>分类管理</span>
+        </a>
+    </li>
+    <li class="treeview" id="g-4">
+        <a href="{{ url_for('admin.comment_list',page=1) }}">
+            <i class="fa fa-comment" aria-hidden="true"></i>
+            <span>评论管理</span>
+        </a>
+    </li>
+    <li class="treeview" id="g-5">
+        <a href="{{ url_for('admin.link_list',page=1) }}">
+            <i class="fa fa-code-fork" aria-hidden="true"></i>
+            <span>链接管理</span>
+        </a>
+    </li>
+    <li class="treeview" id="g-6">
+        <a href="{{ url_for('admin.edit_aboutme') }}">
+            <i class="fa fa-code-fork" aria-hidden="true"></i>
+            <span>关于我编辑</span>
+        </a>
+    </li>
+    <li class="treeview" id="g-7">
+        <a href="{{ url_for('admin.oplog_list',page=1) }}">
+            <i class="fa fa-file-text" aria-hidden="true"></i>
+            <span>操作日志</span>
+        </a>
+    </li>
+    <li class="treeview" id="g-8">
+        <a href="javascript:">
+            <i class="fa fa-user-circle" aria-hidden="true"></i>
+            <span>管理员</span>
+        </a>
+    </li>
+</ul>
